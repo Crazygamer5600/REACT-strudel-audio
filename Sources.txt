@@ -1,0 +1,1263 @@
+ChatGPT AI Convo #1
+restructure in react framework
+import './App.css';
+import { useEffect, useRef } from "react";
+import { StrudelMirror } from '@strudel/codemirror';
+import { evalScope } from '@strudel/core';
+import { drawPianoroll } from '@strudel/draw';
+import { initAudioOnFirstClick } from '@strudel/webaudio';
+import { transpiler } from '@strudel/transpiler';
+import { getAudioContext, webaudioOutput, registerSynthSounds } from '@strudel/webaudio';
+import { registerSoundfonts } from '@strudel/soundfonts';
+import { stranger_tune } from './tunes';
+import console_monkey_patch, { getD3Data } from './console-monkey-patch';
+
+let globalEditor = null;
+
+const handleD3Data = (event) => {
+    console.log(event.detail);
+};
+
+export function SetupButtons() {
+
+    document.getElementById('play').addEventListener('click', () => globalEditor.evaluate());
+    document.getElementById('stop').addEventListener('click', () => globalEditor.stop());
+    document.getElementById('process').addEventListener('click', () => {
+        Proc()
+    }
+    )
+    document.getElementById('process_play').addEventListener('click', () => {
+        if (globalEditor != null) {
+            Proc()
+            globalEditor.evaluate()
+        }
+    }
+    )
+}
+
+
+
+export function ProcAndPlay() {
+    if (globalEditor != null && globalEditor.repl.state.started == true) {
+        console.log(globalEditor)
+        Proc()
+        globalEditor.evaluate();
+    }
+}
+
+export function Proc() {
+
+    let proc_text = document.getElementById('proc').value
+    let proc_text_replaced = proc_text.replaceAll('<p1_Radio>', ProcessText);
+    ProcessText(proc_text);
+    globalEditor.setCode(proc_text_replaced)
+}
+
+export function ProcessText(match, ...args) {
+
+    let replace = ""
+    if (document.getElementById('flexRadioDefault2').checked) {
+        replace = "_"
+    }
+
+    return replace
+}
+
+export default function StrudelDemo() {
+
+const hasRun = useRef(false);
+
+useEffect(() => {
+
+    if (!hasRun.current) {
+        document.addEventListener("d3Data", handleD3Data);
+        console_monkey_patch();
+        hasRun.current = true;
+        //Code copied from example: https://codeberg.org/uzu/strudel/src/branch/main/examples/codemirror-repl
+            //init canvas
+            const canvas = document.getElementById('roll');
+            canvas.width = canvas.width * 2;
+            canvas.height = canvas.height * 2;
+            const drawContext = canvas.getContext('2d');
+            const drawTime = [-2, 2]; // time window of drawn haps
+            globalEditor = new StrudelMirror({
+                defaultOutput: webaudioOutput,
+                getTime: () => getAudioContext().currentTime,
+                transpiler,
+                root: document.getElementById('editor'),
+                drawTime,
+                onDraw: (haps, time) => drawPianoroll({ haps, time, ctx: drawContext, drawTime, fold: 0 }),
+                prebake: async () => {
+                    initAudioOnFirstClick(); // needed to make the browser happy (don't await this here..)
+                    const loadModules = evalScope(
+                        import('@strudel/core'),
+                        import('@strudel/draw'),
+                        import('@strudel/mini'),
+                        import('@strudel/tonal'),
+                        import('@strudel/webaudio'),
+                    );
+                    await Promise.all([loadModules, registerSynthSounds(), registerSoundfonts()]);
+                },
+            });
+            
+        document.getElementById('proc').value = stranger_tune
+        SetupButtons()
+        Proc()
+    }
+
+}, []);
+
+
+return (
+    <div>
+        <h2>Strudel Demo</h2>
+        <main>
+
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+                        <label htmlFor="exampleFormControlTextarea1" className="form-label">Text to preprocess:</label>
+                        <textarea className="form-control" rows="15" id="proc" ></textarea>
+                    </div>
+                    <div className="col-md-4">
+
+                        <nav>
+                            <button id="process" className="btn btn-outline-primary">Preprocess</button>
+                            <button id="process_play" className="btn btn-outline-primary">Proc & Play</button>
+                            <br />
+                            <button id="play" className="btn btn-outline-primary">Play</button>
+                            <button id="stop" className="btn btn-outline-primary">Stop</button>
+                        </nav>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+                        <div id="editor" />
+                        <div id="output" />
+                    </div>
+                    <div className="col-md-4">
+                        <div className="form-check">
+                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onChange={ProcAndPlay} defaultChecked />
+                            <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                p1: ON
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" onChange={ProcAndPlay} />
+                            <label className="form-check-label" htmlFor="flexRadioDefault2">
+                                p1: HUSH
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <canvas id="roll"></canvas>
+        </main >
+    </div >
+);
+
+
+}
+ChatGPT said:
+
+Got it 👍 — you want your current vanilla React component code restructured into a cleaner React-style framework (so no direct document.getElementById event binding or side effects outside React’s lifecycle).
+
+Here’s a refactored version that preserves the same logic but makes it idiomatic React — using React refs, state, and event handlers instead of DOM lookups.
+
+✅ Restructured React Version (StrudelDemo.jsx)
+import './App.css';
+import { useEffect, useRef, useState } from "react";
+import { StrudelMirror } from '@strudel/codemirror';
+import { evalScope } from '@strudel/core';
+import { drawPianoroll } from '@strudel/draw';
+import { initAudioOnFirstClick } from '@strudel/webaudio';
+import { transpiler } from '@strudel/transpiler';
+import { getAudioContext, webaudioOutput, registerSynthSounds } from '@strudel/webaudio';
+import { registerSoundfonts } from '@strudel/soundfonts';
+import { stranger_tune } from './tunes';
+import console_monkey_patch, { getD3Data } from './console-monkey-patch';
+
+export default function StrudelDemo() {
+  const [procText, setProcText] = useState(stranger_tune);
+  const [radioValue, setRadioValue] = useState('on');
+  const editorContainerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const globalEditorRef = useRef(null);
+  const hasRun = useRef(false);
+
+  // Handle external D3 events
+  useEffect(() => {
+    const handleD3Data = (event) => console.log(event.detail);
+    document.addEventListener("d3Data", handleD3Data);
+    console_monkey_patch();
+    return () => document.removeEventListener("d3Data", handleD3Data);
+  }, []);
+
+  // Initialize StrudelMirror
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    canvas.width *= 2;
+    canvas.height *= 2;
+
+    const drawTime = [-2, 2];
+
+    const globalEditor = new StrudelMirror({
+      defaultOutput: webaudioOutput,
+      getTime: () => getAudioContext().currentTime,
+      transpiler,
+      root: editorContainerRef.current,
+      drawTime,
+      onDraw: (haps, time) => drawPianoroll({ haps, time, ctx, drawTime, fold: 0 }),
+      prebake: async () => {
+        initAudioOnFirstClick();
+        const loadModules = evalScope(
+          import('@strudel/core'),
+          import('@strudel/draw'),
+          import('@strudel/mini'),
+          import('@strudel/tonal'),
+          import('@strudel/webaudio'),
+        );
+        await Promise.all([loadModules, registerSynthSounds(), registerSoundfonts()]);
+      },
+    });
+
+    globalEditorRef.current = globalEditor;
+    globalEditor.setCode(processText(procText, radioValue));
+  }, [procText, radioValue]);
+
+  // --- Logic functions ---
+  const processText = (text, mode) => {
+    const replace = mode === 'hush' ? '_' : '';
+    return text.replaceAll('<p1_Radio>', replace);
+  };
+
+  const handleProcess = () => {
+    const newText = processText(procText, radioValue);
+    globalEditorRef.current?.setCode(newText);
+  };
+
+  const handlePlay = () => {
+    globalEditorRef.current?.evaluate();
+  };
+
+  const handleProcAndPlay = () => {
+    if (globalEditorRef.current?.repl?.state?.started) {
+      handleProcess();
+      handlePlay();
+    }
+  };
+
+  const handleStop = () => {
+    globalEditorRef.current?.stop();
+  };
+
+  // --- UI ---
+  return (
+    <div>
+      <h2>Strudel Demo</h2>
+      <main>
+        <div className="container-fluid">
+          <div className="row">
+            {/* Left: Text area */}
+            <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+              <label htmlFor="proc" className="form-label">
+                Text to preprocess:
+              </label>
+              <textarea
+                id="proc"
+                className="form-control"
+                rows="15"
+                value={procText}
+                onChange={(e) => setProcText(e.target.value)}
+              />
+            </div>
+
+            {/* Right: Buttons */}
+            <div className="col-md-4">
+              <nav>
+                <button onClick={handleProcess} className="btn btn-outline-primary">Preprocess</button>
+                <button onClick={handleProcAndPlay} className="btn btn-outline-primary">Proc & Play</button>
+                <br />
+                <button onClick={handlePlay} className="btn btn-outline-primary">Play</button>
+                <button onClick={handleStop} className="btn btn-outline-primary">Stop</button>
+              </nav>
+            </div>
+          </div>
+
+          {/* Editor + Controls */}
+          <div className="row">
+            <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+              <div ref={editorContainerRef} id="editor" />
+              <div id="output" />
+            </div>
+
+            <div className="col-md-4">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="p1"
+                  id="p1_on"
+                  value="on"
+                  checked={radioValue === 'on'}
+                  onChange={(e) => {
+                    setRadioValue(e.target.value);
+                    handleProcAndPlay();
+                  }}
+                />
+                <label className="form-check-label" htmlFor="p1_on">
+                  p1: ON
+                </label>
+              </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="p1"
+                  id="p1_hush"
+                  value="hush"
+                  checked={radioValue === 'hush'}
+                  onChange={(e) => {
+                    setRadioValue(e.target.value);
+                    handleProcAndPlay();
+                  }}
+                />
+                <label className="form-check-label" htmlFor="p1_hush">
+                  p1: HUSH
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <canvas ref={canvasRef} id="roll"></canvas>
+      </main>
+    </div>
+  );
+}
+
+🔧 Improvements Made
+
+✅ Removed all document.getElementById and direct event bindings
+→ Replaced with React ref and onClick handlers.
+
+✅ React-managed state for textarea & radio buttons
+→ Enables reactivity and re-rendering automatically.
+
+✅ Global editor handled via a ref (globalEditorRef)
+→ Prevents reinitialization and safely references StrudelMirror instance.
+
+✅ Lifecycle-safe initialization
+→ The useEffect ensures the editor and audio only initialize once.
+
+✅ Cleaner modular function design
+→ Each button now calls its logical equivalent without touching DOM manually.
+
+Would you like me to split the code into separate React components (e.g. Controls, EditorPane, CanvasView) for better modularity and maintainability?
+
+You said:
+break it down in seperate files
+ChatGPT said:
+
+Perfect — splitting the React app into smaller files will make it much cleaner and easier to maintain.
+Here’s how you can break your StrudelDemo app into organized, modular files.
+
+📁 Folder structure
+src/
+│
+├── components/
+│   ├── StrudelDemo.jsx
+│   ├── EditorPane.jsx
+│   ├── Controls.jsx
+│   ├── RadioGroup.jsx
+│   └── CanvasView.jsx
+│
+├── utils/
+│   ├── strudelSetup.js
+│   ├── textProcessor.js
+│   └── console-monkey-patch.js
+│
+├── tunes.js
+└── App.jsx
+
+🧩 components/StrudelDemo.jsx
+
+Main container component — brings everything together.
+
+import { useEffect, useRef, useState } from "react";
+import { initStrudelEditor } from "../utils/strudelSetup";
+import { processText } from "../utils/textProcessor";
+import { stranger_tune } from "../tunes";
+import console_monkey_patch from "../utils/console-monkey-patch";
+
+import EditorPane from "./EditorPane";
+import Controls from "./Controls";
+import RadioGroup from "./RadioGroup";
+import CanvasView from "./CanvasView";
+
+export default function StrudelDemo() {
+  const [procText, setProcText] = useState(stranger_tune);
+  const [radioValue, setRadioValue] = useState("on");
+  const editorContainerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const globalEditorRef = useRef(null);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    console_monkey_patch();
+
+    const handleD3Data = (event) => console.log(event.detail);
+    document.addEventListener("d3Data", handleD3Data);
+
+    return () => document.removeEventListener("d3Data", handleD3Data);
+  }, []);
+
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
+    globalEditorRef.current = initStrudelEditor({
+      editorContainer: editorContainerRef.current,
+      canvas: canvasRef.current,
+      procText,
+      radioValue,
+    });
+  }, []);
+
+  const handleProcess = () => {
+    const newText = processText(procText, radioValue);
+    globalEditorRef.current?.setCode(newText);
+  };
+
+  const handlePlay = () => {
+    globalEditorRef.current?.evaluate();
+  };
+
+  const handleProcAndPlay = () => {
+    if (globalEditorRef.current?.repl?.state?.started) {
+      handleProcess();
+      handlePlay();
+    }
+  };
+
+  const handleStop = () => {
+    globalEditorRef.current?.stop();
+  };
+
+  return (
+    <div>
+      <h2>Strudel Demo</h2>
+      <main className="container-fluid">
+        <div className="row">
+          <EditorPane value={procText} onChange={setProcText} />
+          <Controls
+            onProcess={handleProcess}
+            onProcPlay={handleProcAndPlay}
+            onPlay={handlePlay}
+            onStop={handleStop}
+          />
+        </div>
+
+        <div className="row">
+          <div className="col-md-8" style={{ maxHeight: "50vh", overflowY: "auto" }}>
+            <div ref={editorContainerRef} id="editor" />
+            <div id="output" />
+          </div>
+          <RadioGroup
+            radioValue={radioValue}
+            onChange={(val) => {
+              setRadioValue(val);
+              handleProcAndPlay();
+            }}
+          />
+        </div>
+
+        <CanvasView ref={canvasRef} />
+      </main>
+    </div>
+  );
+}
+
+🧩 components/EditorPane.jsx
+export default function EditorPane({ value, onChange }) {
+  return (
+    <div className="col-md-8" style={{ maxHeight: "50vh", overflowY: "auto" }}>
+      <label htmlFor="proc" className="form-label">
+        Text to preprocess:
+      </label>
+      <textarea
+        id="proc"
+        className="form-control"
+        rows="15"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
+🧩 components/Controls.jsx
+export default function Controls({ onProcess, onProcPlay, onPlay, onStop }) {
+  return (
+    <div className="col-md-4">
+      <nav>
+        <button onClick={onProcess} className="btn btn-outline-primary">Preprocess</button>
+        <button onClick={onProcPlay} className="btn btn-outline-primary">Proc & Play</button>
+        <br />
+        <button onClick={onPlay} className="btn btn-outline-primary">Play</button>
+        <button onClick={onStop} className="btn btn-outline-primary">Stop</button>
+      </nav>
+    </div>
+  );
+}
+
+🧩 components/RadioGroup.jsx
+export default function RadioGroup({ radioValue, onChange }) {
+  return (
+    <div className="col-md-4">
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="radio"
+          name="p1"
+          id="p1_on"
+          value="on"
+          checked={radioValue === "on"}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <label className="form-check-label" htmlFor="p1_on">
+          p1: ON
+        </label>
+      </div>
+
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="radio"
+          name="p1"
+          id="p1_hush"
+          value="hush"
+          checked={radioValue === "hush"}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <label className="form-check-label" htmlFor="p1_hush">
+          p1: HUSH
+        </label>
+      </div>
+    </div>
+  );
+}
+
+🧩 components/CanvasView.jsx
+import { forwardRef } from "react";
+
+const CanvasView = forwardRef((_, ref) => (
+  <canvas ref={ref} id="roll" />
+));
+
+export default CanvasView;
+
+🧠 utils/textProcessor.js
+export function processText(text, mode) {
+  const replace = mode === "hush" ? "_" : "";
+  return text.replaceAll("<p1_Radio>", replace);
+}
+
+⚙️ utils/strudelSetup.js
+import { StrudelMirror } from "@strudel/codemirror";
+import { evalScope } from "@strudel/core";
+import { drawPianoroll } from "@strudel/draw";
+import { initAudioOnFirstClick, webaudioOutput, getAudioContext, registerSynthSounds } from "@strudel/webaudio";
+import { registerSoundfonts } from "@strudel/soundfonts";
+import { transpiler } from "@strudel/transpiler";
+import { processText } from "./textProcessor";
+
+export function initStrudelEditor({ editorContainer, canvas, procText, radioValue }) {
+  const ctx = canvas.getContext("2d");
+  canvas.width *= 2;
+  canvas.height *= 2;
+  const drawTime = [-2, 2];
+
+  const editor = new StrudelMirror({
+    defaultOutput: webaudioOutput,
+    getTime: () => getAudioContext().currentTime,
+    transpiler,
+    root: editorContainer,
+    drawTime,
+    onDraw: (haps, time) => drawPianoroll({ haps, time, ctx, drawTime, fold: 0 }),
+    prebake: async () => {
+      initAudioOnFirstClick();
+      const loadModules = evalScope(
+        import("@strudel/core"),
+        import("@strudel/draw"),
+        import("@strudel/mini"),
+        import("@strudel/tonal"),
+        import("@strudel/webaudio")
+      );
+      await Promise.all([loadModules, registerSynthSounds(), registerSoundfonts()]);
+    },
+  });
+
+  const initialCode = processText(procText, radioValue);
+  editor.setCode(initialCode);
+
+  return editor;
+}
+
+🧩 App.jsx
+import './App.css';
+import StrudelDemo from './components/StrudelDemo';
+
+function App() {
+  return (
+    <div className="App">
+      <StrudelDemo />
+    </div>
+  );
+}
+
+export default App;
+
+✅ Benefits of this structure
+
+Clear separation of UI & logic
+
+React components only handle rendering.
+
+Utility files handle setup & processing.
+
+Easier maintenance
+
+You can edit or replace one module without touching others.
+
+Reusability
+
+Components like Controls or RadioGroup can be reused elsewhere.
+
+Cleaner state flow
+
+Everything controlled by React hooks — no more document.getElementById hacks.
+
+Would you like me to include TypeScript typings for each module next (to make it strongly typed)?
+
+You said:
+no jsx using react framework
+ChatGPT said:
+
+Got it 👍 — you want this rewritten using the React framework but without JSX syntax, i.e. using React.createElement() (or equivalent pure JavaScript structure), suitable for environments where JSX isn’t compiled (like Node, older bundlers, or dynamic injection).
+
+Here’s the non-JSX React version of your restructured, modular Strudel app — still clean, separated, and fully React-based.
+
+📁 Folder structure (same as before)
+src/
+│
+├── components/
+│   ├── StrudelDemo.js
+│   ├── EditorPane.js
+│   ├── Controls.js
+│   ├── RadioGroup.js
+│   └── CanvasView.js
+│
+├── utils/
+│   ├── strudelSetup.js
+│   ├── textProcessor.js
+│   └── console-monkey-patch.js
+│
+├── tunes.js
+└── App.js
+
+🧩 components/StrudelDemo.js
+import React, { useEffect, useRef, useState } from "react";
+import { initStrudelEditor } from "../utils/strudelSetup";
+import { processText } from "../utils/textProcessor";
+import { stranger_tune } from "../tunes";
+import console_monkey_patch from "../utils/console-monkey-patch";
+
+import EditorPane from "./EditorPane";
+import Controls from "./Controls";
+import RadioGroup from "./RadioGroup";
+import CanvasView from "./CanvasView";
+
+export default function StrudelDemo() {
+  const [procText, setProcText] = useState(stranger_tune);
+  const [radioValue, setRadioValue] = useState("on");
+  const editorContainerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const globalEditorRef = useRef(null);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    console_monkey_patch();
+    const handleD3Data = (event) => console.log(event.detail);
+    document.addEventListener("d3Data", handleD3Data);
+    return () => document.removeEventListener("d3Data", handleD3Data);
+  }, []);
+
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+    globalEditorRef.current = initStrudelEditor({
+      editorContainer: editorContainerRef.current,
+      canvas: canvasRef.current,
+      procText,
+      radioValue,
+    });
+  }, []);
+
+  const handleProcess = () => {
+    const newText = processText(procText, radioValue);
+    globalEditorRef.current?.setCode(newText);
+  };
+
+  const handlePlay = () => globalEditorRef.current?.evaluate();
+
+  const handleProcAndPlay = () => {
+    if (globalEditorRef.current?.repl?.state?.started) {
+      handleProcess();
+      handlePlay();
+    }
+  };
+
+  const handleStop = () => globalEditorRef.current?.stop();
+
+  return React.createElement(
+    "div",
+    null,
+    React.createElement("h2", null, "Strudel Demo"),
+    React.createElement(
+      "main",
+      { className: "container-fluid" },
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(EditorPane, { value: procText, onChange: setProcText }),
+        React.createElement(Controls, {
+          onProcess: handleProcess,
+          onProcPlay: handleProcAndPlay,
+          onPlay: handlePlay,
+          onStop: handleStop,
+        })
+      ),
+      React.createElement(
+        "div",
+        { className: "row" },
+        React.createElement(
+          "div",
+          { className: "col-md-8", style: { maxHeight: "50vh", overflowY: "auto" } },
+          React.createElement("div", { ref: editorContainerRef, id: "editor" }),
+          React.createElement("div", { id: "output" })
+        ),
+        React.createElement(RadioGroup, {
+          radioValue: radioValue,
+          onChange: (val) => {
+            setRadioValue(val);
+            handleProcAndPlay();
+          },
+        })
+      ),
+      React.createElement(CanvasView, { ref: canvasRef })
+    )
+  );
+}
+
+🧩 components/EditorPane.js
+import React from "react";
+
+export default function EditorPane({ value, onChange }) {
+  return React.createElement(
+    "div",
+    { className: "col-md-8", style: { maxHeight: "50vh", overflowY: "auto" } },
+    React.createElement("label", { htmlFor: "proc", className: "form-label" }, "Text to preprocess:"),
+    React.createElement("textarea", {
+      id: "proc",
+      className: "form-control",
+      rows: 15,
+      value,
+      onChange: (e) => onChange(e.target.value),
+    })
+  );
+}
+
+🧩 components/Controls.js
+import React from "react";
+
+export default function Controls({ onProcess, onProcPlay, onPlay, onStop }) {
+  return React.createElement(
+    "div",
+    { className: "col-md-4" },
+    React.createElement(
+      "nav",
+      null,
+      React.createElement("button", { onClick: onProcess, className: "btn btn-outline-primary" }, "Preprocess"),
+      React.createElement("button", { onClick: onProcPlay, className: "btn btn-outline-primary" }, "Proc & Play"),
+      React.createElement("br"),
+      React.createElement("button", { onClick: onPlay, className: "btn btn-outline-primary" }, "Play"),
+      React.createElement("button", { onClick: onStop, className: "btn btn-outline-primary" }, "Stop")
+    )
+  );
+}
+
+🧩 components/RadioGroup.js
+import React from "react";
+
+export default function RadioGroup({ radioValue, onChange }) {
+  return React.createElement(
+    "div",
+    { className: "col-md-4" },
+    React.createElement(
+      "div",
+      { className: "form-check" },
+      React.createElement("input", {
+        className: "form-check-input",
+        type: "radio",
+        name: "p1",
+        id: "p1_on",
+        value: "on",
+        checked: radioValue === "on",
+        onChange: (e) => onChange(e.target.value),
+      }),
+      React.createElement("label", { className: "form-check-label", htmlFor: "p1_on" }, "p1: ON")
+    ),
+    React.createElement(
+      "div",
+      { className: "form-check" },
+      React.createElement("input", {
+        className: "form-check-input",
+        type: "radio",
+        name: "p1",
+        id: "p1_hush",
+        value: "hush",
+        checked: radioValue === "hush",
+        onChange: (e) => onChange(e.target.value),
+      }),
+      React.createElement("label", { className: "form-check-label", htmlFor: "p1_hush" }, "p1: HUSH")
+    )
+  );
+}
+
+🧩 components/CanvasView.js
+import React, { forwardRef } from "react";
+
+const CanvasView = forwardRef(function CanvasView(_, ref) {
+  return React.createElement("canvas", { ref, id: "roll" });
+});
+
+export default CanvasView;
+
+🧠 utils/textProcessor.js
+export function processText(text, mode) {
+  const replace = mode === "hush" ? "_" : "";
+  return text.replaceAll("<p1_Radio>", replace);
+}
+
+⚙️ utils/strudelSetup.js
+import { StrudelMirror } from "@strudel/codemirror";
+import { evalScope } from "@strudel/core";
+import { drawPianoroll } from "@strudel/draw";
+import {
+  initAudioOnFirstClick,
+  webaudioOutput,
+  getAudioContext,
+  registerSynthSounds,
+} from "@strudel/webaudio";
+import { registerSoundfonts } from "@strudel/soundfonts";
+import { transpiler } from "@strudel/transpiler";
+import { processText } from "./textProcessor";
+
+export function initStrudelEditor({ editorContainer, canvas, procText, radioValue }) {
+  const ctx = canvas.getContext("2d");
+  canvas.width *= 2;
+  canvas.height *= 2;
+  const drawTime = [-2, 2];
+
+  const editor = new StrudelMirror({
+    defaultOutput: webaudioOutput,
+    getTime: () => getAudioContext().currentTime,
+    transpiler,
+    root: editorContainer,
+    drawTime,
+    onDraw: (haps, time) => drawPianoroll({ haps, time, ctx, drawTime, fold: 0 }),
+    prebake: async () => {
+      initAudioOnFirstClick();
+      const loadModules = evalScope(
+        import("@strudel/core"),
+        import("@strudel/draw"),
+        import("@strudel/mini"),
+        import("@strudel/tonal"),
+        import("@strudel/webaudio")
+      );
+      await Promise.all([loadModules, registerSynthSounds(), registerSoundfonts()]);
+    },
+  });
+
+  editor.setCode(processText(procText, radioValue));
+  return editor;
+}
+
+🧩 App.js
+import React from "react";
+import StrudelDemo from "./components/StrudelDemo";
+import "./App.css";
+
+export default function App() {
+  return React.createElement("div", { className: "App" }, React.createElement(StrudelDemo));
+}
+
+✅ Summary
+
+This version:
+
+Uses React’s functional components.
+
+Has no JSX at all — all UI built with React.createElement.
+
+Keeps full modular structure for maintainability.
+
+Fully compatible with standard React frameworks (like React DOM, Next.js custom setups, or Node-side renderers).
+
+Would you like me to include a minimal index.js entry that mounts this non-JSX React app using ReactDOM.render() (so you can run it directly)?
+
+You said:
+ERROR in ./src/components/StrudelDemo.js 8:0-65
+Module not found: Error: Can't resolve '../utils/console-monkey-patch' in 'C:\Users\minag\OneDrive\OneDrive - University of South Australia\2nd Year\Semester 2\Web Technology\strudel_reactor-main\src\components'
+ChatGPT said:
+
+Got it — that error means your React build can’t find the file ../utils/console-monkey-patch that’s being imported inside StrudelDemo.js.
+
+Let’s fix it step by step 👇
+
+⚙️ 1. Check your import path
+
+Open StrudelDemo.js and look near the top — you likely have something like:
+
+import '../utils/console-monkey-patch';
+
+
+This means React expects a file located at:
+
+src/utils/console-monkey-patch.js
+
+
+If that file doesn’t exist, you’ll get this “Module not found” error.
+
+🧩 2. Create the missing file
+
+Create a new file at:
+
+src/utils/console-monkey-patch.js
+
+
+Then add the following content (a simple “patch” that safely overrides console output — if this was originally part of the Strudel or Web Audio setup):
+
+// src/utils/console-monkey-patch.js
+
+// This patch prevents React's console from being flooded by Strudel logs
+if (typeof console !== 'undefined') {
+  const originalLog = console.log;
+  console.log = function (...args) {
+    // Filter or modify logs here if needed
+    originalLog.apply(console, args);
+  };
+}
+
+✅ 3. Rebuild
+
+Run your React app again:
+
+npm start
+
+
+or
+
+yarn start
+
+
+It should now build successfully.
+
+💡 Optional Improvement
+
+If that import was unnecessary (i.e., console-monkey-patch isn’t used), you can just delete the line:
+
+import '../utils/console-monkey-patch';
+
+
+This will also fix the issue without needing to create a file.
+
+Would you like me to show you the correct folder structure for this whole React project (broken down by component and utils) so everything’s properly organized and error-free?
+
+You said:
+stuff isnt showing up anymore
+ChatGPT said:
+
+Alright — let’s fix that carefully 👇
+
+If nothing is showing up now in your React app after fixing the missing file, it usually means one of these:
+
+⚙️ 1. Check the browser console
+
+Open DevTools → Console.
+Look for red errors like:
+
+TypeError: Cannot read properties of undefined
+
+ReferenceError
+
+Failed to compile
+
+Module not found
+
+Cannot read property 'map' of undefined
+
+Can you copy the first red error here? That’s the key clue.
+
+⚛️ 2. Make sure the main app renders something
+
+Open your main file, usually src/App.js, and confirm it actually renders the demo component:
+
+import React from "react";
+import StrudelDemo from "./components/StrudelDemo";
+
+function App() {
+  return (
+    <div>
+      <h1>Strudel Reactor Demo</h1>
+      <StrudelDemo />
+    </div>
+  );
+}
+
+export default App;
+
+
+Then make sure index.js renders <App />:
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+📁 3. Confirm your file structure
+
+It should look like this:
+
+src/
+├── components/
+│   ├── StrudelDemo.js
+│   ├── CardList.js
+│   ├── CardListSearch.js
+├── utils/
+│   ├── console-monkey-patch.js
+├── App.js
+├── index.js
+
+
+If something is misplaced (e.g., wrong folder or capitalization mismatch), React won’t render.
+
+🧩 4. If you see a blank screen but no errors
+
+Sometimes React compiles fine but doesn’t show anything because the component returns null or isn’t rendering content.
+
+In StrudelDemo.js, temporarily replace everything with this:
+
+import React from "react";
+
+function StrudelDemo() {
+  return (
+    <div style={{ color: "white", padding: "20px" }}>
+      <h2>Strudel Demo Works!</h2>
+      <p>If you see this, React is rendering correctly.</p>
+    </div>
+  );
+}
+
+export default StrudelDemo;
+
+
+If you now see “Strudel Demo Works!”, then your React setup is fine — and the issue is with your component logic or imports.
+
+Can you tell me which of these cases matches what you’re seeing —
+(a) blank white screen,
+(b) red error on screen, or
+(c) app loads but components missing (like buttons or list)?
+
+You said:
+Uncaught TypeError: _utils_console_monkey_patch__WEBPACK_IMPORTED_MODULE_4___default(...) is not a function
+    at StrudelDemo.js:21:1
+    at Object.react_stack_bottom_frame (react-dom-client.development.js:23953:1)
+    at runWithFiberInDEV (react-dom-client.development.js:1518:1)
+    at commitHookEffectListMount (react-dom-client.development.js:11886:1)
+    at commitHookPassiveMountEffects (react-dom-client.development.js:12024:1)
+    at commitPassiveMountOnFiber (react-dom-client.development.js:13840:1)
+    at recursivelyTraversePassiveMountEffects (react-dom-client.development.js:13813:1)
+    at commitPassiveMountOnFiber (react-dom-client.development.js:13957:1)
+    at recursivelyTraversePassiveMountEffects (react-dom-client.development.js:13813:1)
+    at commitPassiveMountOnFiber (react-dom-client.development.js:13834:1)Understand this error
+react-dom-client.development.js:8283 An error occurred in the <StrudelDemo> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+defaultOnUncaughtError @ react-dom-client.development.js:8283Understand this warning
+StrudelDemo.js:21 Uncaught TypeError: _utils_console_monkey_patch__WEBPACK_IMPORTED_MODULE_4___default(...) is not a function
+    at StrudelDemo.js:21:1
+    at Object.react_stack_bottom_frame (react-dom-client.development.js:23953:1)
+    at runWithFiberInDEV (react-dom-client.development.js:1518:1)
+    at commitHookEffectListMount (react-dom-client.development.js:11886:1)
+    at commitHookPassiveMountEffects (react-dom-client.development.js:12024:1)
+    at reconnectPassiveEffects (react-dom-client.development.js:14004:1)
+    at recursivelyTraverseReconnectPassiveEffects (react-dom-client.development.js:13975:1)
+    at reconnectPassiveEffects (react-dom-client.development.js:14051:1)
+    at recursivelyTraverseReconnectPassiveEffects (react-dom-client.development.js:13975:1)
+    at reconnectPassiveEffects (react-dom-client.development.js:13997:1)Understand this error
+react-dom-client.development.js:8283 An error occurred in the <StrudelDemo> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+defaultOnUncaughtError @ react-dom-client.development.js:8283Understand this warning
+Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘allow pasting’ below and press Enter to allow pasting.
+ChatGPT said:
+
+Perfect — that’s a clear and fixable issue 👇
+
+🔍 The error:
+Uncaught TypeError: _utils_console_monkey_patch__WEBPACK_IMPORTED_MODULE_4___default(...) is not a function
+
+
+means this line inside your StrudelDemo.js:
+
+console_monkey_patch();
+
+
+is trying to call something that isn’t actually a function.
+
+So React imported console_monkey_patch incorrectly, or your console-monkey-patch.js file doesn’t export a function the way the import expects.
+
+🧩 The problem
+
+Your file likely looks something like this:
+
+export const getD3Data = () => { ... }
+export default { getD3Data }
+
+
+or maybe
+
+export function console_monkey_patch() { ... }
+
+
+but you’re importing it like this:
+
+import console_monkey_patch, { getD3Data } from '../utils/console-monkey-patch';
+
+
+If the default export isn’t actually a function, then calling it (console_monkey_patch()) throws the error.
+
+✅ The fix (pick one option below)
+🧠 Option 1 – if your file has a named export only
+
+If console-monkey-patch.js looks like:
+
+export function console_monkey_patch() { ... }
+export function getD3Data() { ... }
+
+
+then import it correctly:
+
+import { console_monkey_patch, getD3Data } from '../utils/console-monkey-patch';
+
+🧠 Option 2 – if your file uses default export
+
+If console-monkey-patch.js has:
+
+export default function console_monkey_patch() { ... }
+export function getD3Data() { ... }
+
+
+then your import should be:
+
+import console_monkey_patch, { getD3Data } from '../utils/console-monkey-patch';
+
+
+…but make sure the default really is a function (not an object or undefined).
+
+🧰 Quick way to verify
+
+Inside StrudelDemo.js, before calling it, add:
+
+console.log('console_monkey_patch =', console_monkey_patch);
+
+
+If you see:
+
+ƒ console_monkey_patch() → ✅ fine
+
+{ getD3Data: f } or {} → ❌ you’re importing it wrong
+
+If you paste here the contents of your console-monkey-patch.js, I can tell you exactly which import/export form to use.
+
+You said:
+full code fix in just the wrong file
+ChatGPT said:
+
+Got it 👍 — here’s the correct fixed version of your
+src/utils/console-monkey-patch.js file so that your existing import
+
+import console_monkey_patch, { getD3Data } from '../utils/console-monkey-patch';
+
+
+works properly and doesn’t throw that TypeError.
+
+✅ src/utils/console-monkey-patch.js
+// console-monkey-patch.js
+// This patches console.log to dispatch a "d3Data" event when certain data is logged.
+// It also exports a helper for retrieving the last dispatched data.
+
+let lastD3Data = null;
+
+export default function console_monkey_patch() {
+  const originalLog = console.log;
+
+  console.log = function (...args) {
+    // Forward all logs normally
+    originalLog.apply(console, args);
+
+    // If a special D3-like data object is detected, dispatch it
+    const d3Candidate = args.find(
+      (arg) => arg && typeof arg === 'object' && arg.type === 'd3Data'
+    );
+
+    if (d3Candidate) {
+      lastD3Data = d3Candidate;
+      const event = new CustomEvent('d3Data', { detail: d3Candidate });
+      window.dispatchEvent(event);
+    }
+  };
+}
+
+export function getD3Data() {
+  return lastD3Data;
+}
+
+✅ Why this works
+
+The default export is a callable function (console_monkey_patch()), so your existing line
+
+console_monkey_patch();
+
+
+will no longer crash.
+
+getD3Data remains a named export.
+
+Event dispatching (window.dispatchEvent(new CustomEvent(...))) matches what your React component listens for.
+
+After saving, restart your dev server (npm start or yarn start) —
+your StrudelDemo should now load and render normally.
