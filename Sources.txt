@@ -1261,3 +1261,254 @@ Event dispatching (window.dispatchEvent(new CustomEvent(...))) matches what your
 
 After saving, restart your dev server (npm start or yarn start) —
 your StrudelDemo should now load and render normally.
+
+
+chatGPT Convo 2
+make a bpm slider for my strudel project from before
+You said:
+from my javascript project when i asked you to seperate code into seperat files
+You said:
+apply to this only
+import React, { useEffect, useRef, useState } from "react";
+import { initStrudelEditor } from "../utils/strudelSetup";
+import { processText } from "../utils/textProcessor";
+import { stranger_tune } from "../tunes";
+import console_monkey_patch from "../utils/console-monkey-patch";
+import '../utils/console-monkey-patch';
+import EditorPane from "./EditorPane";
+import Controls from "./Controls";
+import RadioGroup from "./RadioGroup";
+import CanvasView from "./CanvasView";
+
+export default function StrudelDemo() {
+    const [procText, setProcText] = useState(stranger_tune);
+    const [radioValue, setRadioValue] = useState("on");
+    const editorContainerRef = useRef(null);
+    const canvasRef = useRef(null);
+    const globalEditorRef = useRef(null);
+    const hasRun = useRef(false);
+
+    useEffect(() => {
+        console_monkey_patch();
+        const handleD3Data = (event) => console.log(event.detail);
+        document.addEventListener("d3Data", handleD3Data);
+        return () => document.removeEventListener("d3Data", handleD3Data);
+    }, []);
+
+    useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
+        globalEditorRef.current = initStrudelEditor({
+            editorContainer: editorContainerRef.current,
+            canvas: canvasRef.current,
+            procText,
+            radioValue,
+        });
+    }, []);
+
+    const handleProcess = () => {
+        const newText = processText(procText, radioValue);
+        globalEditorRef.current?.setCode(newText);
+    };
+
+    const handlePlay = () => globalEditorRef.current?.evaluate();
+
+    const handleProcAndPlay = () => {
+        if (globalEditorRef.current?.repl?.state?.started) {
+            handleProcess();
+            handlePlay();
+        }
+    };
+
+    const handleStop = () => globalEditorRef.current?.stop();
+
+    return React.createElement(
+        "div",
+        null,
+        React.createElement("h2", null, "Strudel Demo"),
+        React.createElement(
+            "main",
+            { className: "container-fluid" },
+            React.createElement(
+                "div",
+                { className: "row" },
+                React.createElement(EditorPane, { value: procText, onChange: setProcText }),
+                React.createElement(Controls, {
+                    onProcess: handleProcess,
+                    onProcPlay: handleProcAndPlay,
+                    onPlay: handlePlay,
+                    onStop: handleStop,
+                })
+            ),
+            React.createElement(
+                "div",
+                { className: "row" },
+                React.createElement(
+                    "div",
+                    { className: "col-md-8", style: { maxHeight: "50vh", overflowY: "auto" } },
+                    React.createElement("div", { ref: editorContainerRef, id: "editor" }),
+                    React.createElement("div", { id: "output" })
+                ),
+                React.createElement(RadioGroup, {
+                    radioValue: radioValue,
+                    onChange: (val) => {
+                        setRadioValue(val);
+                        handleProcAndPlay();
+                    },
+                })
+            ),
+            React.createElement(CanvasView, { ref: canvasRef })
+        )
+    );
+}
+You said:
+needs to directly edit 
+export const stranger_tune = setcps(140/60/4)
+
+samples('github:algorave-dave/samples')
+samples('https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/strudel.json')
+samples('https://raw.githubusercontent.com/Mittans/tidal-drum-machines/main/machines/tidal-drum-machines.json')
+
+const gain_patterns = [
+  "2",
+  "{0.75 2.5}*4",
+    "{0.75 2.5!9 0.75 2.5!5 0.75 2.5 0.75 2.5!7 0.75 2.5!3 <2.5 0.75> 2.5}%16",
+]
+
+const drum_structure = [
+"~",
+"x*4",
+"{x ~!9 x ~!5 x ~ x ~!7 x ~!3 < ~ x > ~}%16",
+]
+
+const basslines = [
+  "[[eb1, eb2]!16 [f2, f1]!16 [g2, g1]!16 [f2, f1]!8 [bb2, bb1]!8]/8",
+  "[[eb1, eb2]!16 [bb2, bb1]!16 [g2, g1]!16 [f2, f1]!4 [bb1, bb2]!4 [eb1, eb2]!4 [f1, f2]!4]/8"
+]
+
+const arpeggiator1 = [
+"{d4 bb3 eb3 d3 bb2 eb2}%16",
+"{c4 bb3 f3 c3 bb2 f2}%16",
+"{d4 bb3 g3 d3 bb2 g2}%16",
+"{c4 bb3 f3 c3 bb2 f2}%16",
+]
+
+const arpeggiator2 = [
+"{d4 bb3 eb3 d3 bb2 eb2}%16",
+"{c4 bb3 f3 c3 bb2 f2}%16",
+"{d4 bb3 g3 d3 bb2 g2}%16",
+"{d5 bb4 g4 d4 bb3 g3 d4 bb3 eb3 d3 bb2 eb2}%16",
+]
+
+
+const pattern = 0
+const bass = 0
+
+bassline:
+note(pick(basslines, bass))
+.sound("supersaw")
+.postgain(2)
+.room(0.6)
+.lpf(700)
+.room(0.4)
+.postgain(pick(gain_patterns, pattern))
+
+
+main_arp: 
+note(pick(arpeggiator1, "<0 1 2 3>/2"))
+.sound("supersaw")
+.lpf(300)
+.adsr("0:0:.5:.1")
+.room(0.6)
+.lpenv(3.3)
+.postgain(pick(gain_patterns, pattern))
+
+
+drums:
+stack(
+  s("tech:5")
+  .postgain(6)
+  .pcurve(2)
+  .pdec(1)
+  .struct(pick(drum_structure, pattern)),
+
+  s("sh").struct("[x!3 ~!2 x!10 ~]")
+  .postgain(0.5).lpf(7000)
+  .bank("RolandTR808")
+  .speed(0.8).jux(rev).room(sine.range(0.1,0.4)).gain(0.6),
+
+  s("{~ ~ rim ~ cp ~ rim cp ~!2 rim ~ cp ~ < rim ~ >!2}%8 *2")
+  .bank("[KorgDDM110, OberheimDmx]").speed(1.2)
+  .postgain(.25),
+)
+
+drums2: 
+stack(
+  s("[~ hh]*4").bank("RolandTR808").room(0.3).speed(0.75).gain(1.2),
+  s("hh").struct("x*16").bank("RolandTR808")
+  .gain(0.6)
+  .jux(rev)
+  .room(sine.range(0.1,0.4))
+  .postgain(0.5),
+  
+  s("[psr:[2|5|6|7|8|9|12|24|25]*16]?0.1")
+  .gain(0.1)
+  .postgain(pick(gain_patterns, pattern))
+  .hpf(1000)
+  .speed(0.5)
+  .rarely(jux(rev)),
+)
+//Remixed and reproduced from Algorave Dave's code found here: https://www.youtube.com/watch?v=ZCcpWzhekEY
+// all(x => x.gain(mouseX.range(0,1)))
+// all(x => x.log())
+
+// @version 1.2;
+You said:
+Compiled with problems:
+×
+ERROR in ./src/components/StrudelDemo.js 16:43-56
+export 'stranger_tune' (imported as 'stranger_tune') was not found in '../tunes' (possible exports: default)
+ERROR in ./src/tunes.js 5:0-58
+Module not found: Error: You attempted to import ../utils/strudelSetup which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+You can either move it inside src/, or add a symlink to it from project's node_modules/.
+ERROR in ./src/tunes.js 6:0-53
+Module not found: Error: You attempted to import ../utils/textProcessor which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+You can either move it inside src/, or add a symlink to it from project's node_modules/.
+ERROR in ./src/tunes.js 7:0-41
+Module not found: Error: You attempted to import ../tunes which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+You can either move it inside src/, or add a symlink to it from project's node_modules/.
+ERROR in ./src/tunes.js 8:0-65
+Module not found: Error: You attempted to import ../utils/console-monkey-patch which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+You can either move it inside src/, or add a symlink to it from project's node_modules/.
+ERROR in ./src/tunes.js 10:0-38
+Module not found: Error: Can't resolve './EditorPane' in 'C:\Users\minag\OneDrive\OneDrive - University of South Australia\2nd Year\Semester 2\Web Technology\strudel_reactor-main\src'
+ERROR in ./src/tunes.js 11:0-34
+Module not found: Error: Can't resolve './Controls' in 'C:\Users\minag\OneDrive\OneDrive - University of South Australia\2nd Year\Semester 2\Web Technology\strudel_reactor-main\src'
+ERROR in ./src/tunes.js 12:0-38
+Module not found: Error: Can't resolve './RadioGroup' in 'C:\Users\minag\OneDrive\OneDrive - University of South Australia\2nd Year\Semester 2\Web Technology\strudel_reactor-main\src'
+ERROR in ./src/tunes.js 13:0-38
+Module not found: Error: Can't resolve './CanvasView' in 'C:\Users\minag\OneDrive\OneDrive - University of South Australia\2nd Year\Semester 2\Web Technology\strudel_reactor-main\src'
+You said:
+so give me one fix
+You said:
+ERROR in ./src/components/StrudelDemo.js 32:30-47
+export 'initStrudelEditor' (imported as 'initStrudelEditor') was not found in '../utils/strudelSetup' (possible exports: default)
+You said:
+one answer
+You said:
+one whole answer
+You said:
+to paste
+You said:
+in which file?
+You said:
+just one long string for strudel demo
+You said:
+Compiled with problems:
+×
+ERROR in ./src/components/StrudelDemo.js 16:43-56
+export 'default' (imported as 'stranger_tune') was not found in '../tunes' (possible exports: stranger_tune)
+ERROR in ./src/components/StrudelDemo.js 32:30-47
+export 'default' (imported as 'initStrudelEditor') was not found in '../utils/strudelSetup' (possible exports: initStrudelEditor)
+
+ChatGPT can make mistakes. Check important info.
