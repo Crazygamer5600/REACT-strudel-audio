@@ -78,11 +78,11 @@ export default function StrudelDemo() {
     };
 
     const handleProcAndPlay = () => {
-        if (globalEditorRef.current?.repl?.state?.started) {
-            handleProcess();
-            startPlayback();
-        }
+        stopPlayback();   // Stop anything already running
+        handleProcess();  // Preprocess code (updates Strudel editor)
+        startPlayback();  // Immediately start playback
     };
+
 
     return React.createElement(
         "div",
