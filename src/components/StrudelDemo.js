@@ -21,7 +21,6 @@ export default function StrudelDemo() {
     const hasRun = useRef(false);
     const intervalRef = useRef(null);
 
-    // Initialize Strudel editor
     useEffect(() => {
         console_monkey_patch();
         const handleD3Data = (event) => console.log(event.detail);
@@ -32,6 +31,7 @@ export default function StrudelDemo() {
     useEffect(() => {
         if (hasRun.current) return;
         hasRun.current = true;
+
         globalEditorRef.current = initStrudelEditor({
             editorContainer: editorContainerRef.current,
             canvas: canvasRef.current,
@@ -39,7 +39,6 @@ export default function StrudelDemo() {
         });
     }, []);
 
-    // Update Strudel code when BPM changes
     useEffect(() => {
         const updated = procText.replace(
             /setcps\([^)]*\)/,
@@ -49,9 +48,8 @@ export default function StrudelDemo() {
         globalEditorRef.current?.setCode(updated);
     }, [bpm]);
 
-    // Playback interval
     const startPlayback = () => {
-        if (intervalRef.current) return; // already running
+        if (intervalRef.current) return;
         setPlaying(true);
         const startTime = performance.now() / 1000 - currentTime;
 
@@ -78,39 +76,68 @@ export default function StrudelDemo() {
     };
 
     const handleProcAndPlay = () => {
-        stopPlayback();   // Stop anything already running
-        handleProcess();  // Preprocess code (updates Strudel editor)
-        startPlayback();  // Immediately start playback
+        stopPlayback();
+        handleProcess();
+        startPlayback();
     };
 
+    // Neon dark theme
+    const neonStyles = {
+        container: {
+            backgroundColor: "#0f0f1a",
+            color: "#39ff14",
+            minHeight: "100vh",
+            padding: "1rem",
+            fontFamily: "'Courier New', Courier, monospace",
+        },
+        header: { color: "#00fff7", textAlign: "center", marginBottom: "1rem" },
+        row: { marginBottom: "1rem" },
+        editorPane: { backgroundColor: "#1a1a2e", borderRadius: "8px", padding: "0.5rem" },
+        slider: { accentColor: "#ff0099", width: "100%" },
+        bpmLabel: { color: "#ff77ff", marginRight: "1rem" },
+        controls: { marginTop: "0.5rem" },
+        outputBox: {
+            backgroundColor: "#1a1a2e",
+            borderRadius: "8px",
+            padding: "0.5rem",
+            whiteSpace: "pre-wrap",
+            fontFamily: "monospace",
+            width: "100%",
+            textAlign: "left",
+        },
+    };
 
     return React.createElement(
         "div",
-        null,
-        React.createElement("h2", null, "Strudel Demo"),
+        { style: neonStyles.container },
+        React.createElement("h2", { style: neonStyles.header }, "Strudel Demo"),
+
         React.createElement(
             "main",
             { className: "container-fluid" },
+
+            // Editor + Controls
             React.createElement(
                 "div",
-                { className: "row" },
-                React.createElement(EditorPane, { value: procText, onChange: setProcText }),
+                { className: "row", style: neonStyles.row },
+                React.createElement(EditorPane, { value: procText, onChange: setProcText, style: neonStyles.editorPane }),
                 React.createElement(Controls, {
                     onProcess: handleProcess,
                     onProcPlay: handleProcAndPlay,
                     onPlay: startPlayback,
                     onStop: stopPlayback,
+                    style: neonStyles.controls
                 })
             ),
 
             // BPM Slider + Graph
             React.createElement(
                 "div",
-                { className: "row my-3 align-items-center" },
+                { className: "row my-3 align-items-center", style: neonStyles.row },
                 React.createElement(
                     "div",
-                    { className: "col-md-8" },
-                    React.createElement("label", { htmlFor: "bpmSlider" }, `BPM: ${bpm}`),
+                    { className: "col-12" },
+                    React.createElement("label", { htmlFor: "bpmSlider", style: neonStyles.bpmLabel }, `BPM: ${bpm}`),
                     React.createElement("input", {
                         id: "bpmSlider",
                         type: "range",
@@ -118,28 +145,31 @@ export default function StrudelDemo() {
                         max: "200",
                         value: bpm,
                         onChange: (e) => setBpm(Number(e.target.value)),
-                        className: "form-range w-100"
+                        className: "form-range",
+                        style: neonStyles.slider
                     }),
                     React.createElement(BPMGraph, {
                         bpm,
                         currentTime,
-                        width: 600,
-                        height: 100,
+                        width: 800,
+                        height: 150,
                         playing
                     })
                 )
             ),
 
+            // Timeline Editor + Output
             React.createElement(
                 "div",
                 { className: "row" },
                 React.createElement(
                     "div",
-                    { className: "col-md-8", style: { maxHeight: "50vh", overflowY: "auto" } },
-                    React.createElement("div", { ref: editorContainerRef, id: "editor" }),
-                    React.createElement("div", { id: "output" })
-                ),
+                    { className: "col-12" },
+                    React.createElement("div", { ref: editorContainerRef, id: "editor", style: neonStyles.outputBox }),
+                    React.createElement("div", { id: "output", style: neonStyles.outputBox })
+                )
             ),
+
             React.createElement(CanvasView, { ref: canvasRef })
         )
     );

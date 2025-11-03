@@ -2,10 +2,10 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { initStrudelEditor } from "../utils/strudelSetup";
 
 const TimelineEditor = forwardRef(({ initialValue }, ref) => {
-    const containerRef = ref || useRef(null);
+    const internalRef = useRef(null); // always call useRef
+    const containerRef = ref || internalRef; // assign ref or fallback
     const [height, setHeight] = useState(50);
 
-    // Compute height based on content
     const computeHeight = (text) => {
         const lines = text.split("\n").length;
         const lineHeight = 20; // adjust to match editor line height
@@ -15,7 +15,6 @@ const TimelineEditor = forwardRef(({ initialValue }, ref) => {
     useEffect(() => {
         if (!containerRef.current) return;
 
-        // Initialize Strudel editor
         initStrudelEditor({
             editorContainer: containerRef.current,
             canvas: null,
@@ -25,13 +24,16 @@ const TimelineEditor = forwardRef(({ initialValue }, ref) => {
         // Set initial height
         setHeight(computeHeight(initialValue));
 
-        // Observe changes inside the editor
         const observer = new MutationObserver(() => {
             const content = containerRef.current.innerText || initialValue;
             setHeight(computeHeight(content));
         });
 
-        observer.observe(containerRef.current, { childList: true, subtree: true, characterData: true });
+        observer.observe(containerRef.current, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+        });
 
         return () => observer.disconnect();
     }, [containerRef, initialValue]);
