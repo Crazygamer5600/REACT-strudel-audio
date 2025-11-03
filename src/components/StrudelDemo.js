@@ -4,7 +4,6 @@ import console_monkey_patch from "../utils/console-monkey-patch";
 import "../utils/console-monkey-patch";
 import EditorPane from "./EditorPane";
 import Controls from "./Controls";
-import RadioGroup from "./RadioGroup";
 import CanvasView from "./CanvasView";
 import { initStrudelEditor } from "../utils/strudelSetup";
 import { stranger_tune } from "../tunes";
@@ -12,7 +11,6 @@ import BPMGraph from "./BPMGraph";
 
 export default function StrudelDemo() {
     const [procText, setProcText] = useState(stranger_tune);
-    const [radioValue, setRadioValue] = useState("on");
     const [bpm, setBpm] = useState(140);
     const [currentTime, setCurrentTime] = useState(0);
     const [playing, setPlaying] = useState(false);
@@ -38,7 +36,6 @@ export default function StrudelDemo() {
             editorContainer: editorContainerRef.current,
             canvas: canvasRef.current,
             procText,
-            radioValue,
         });
     }, []);
 
@@ -76,7 +73,7 @@ export default function StrudelDemo() {
     };
 
     const handleProcess = () => {
-        const newText = processText(procText, radioValue);
+        const newText = processText(procText);
         globalEditorRef.current?.setCode(newText);
     };
 
@@ -142,13 +139,6 @@ export default function StrudelDemo() {
                     React.createElement("div", { ref: editorContainerRef, id: "editor" }),
                     React.createElement("div", { id: "output" })
                 ),
-                React.createElement(RadioGroup, {
-                    radioValue: radioValue,
-                    onChange: (val) => {
-                        setRadioValue(val);
-                        handleProcAndPlay();
-                    },
-                })
             ),
             React.createElement(CanvasView, { ref: canvasRef })
         )
