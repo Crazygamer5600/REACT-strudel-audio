@@ -26,7 +26,7 @@ function ModalFeature() {
           React.createElement(
             Modal.Body,
             { key: "body" },
-            "Here you can display more detailed project information."
+            "I bet you clicked this button expecting new info. Hah, sucker."
           ),
           React.createElement(
             Modal.Footer,

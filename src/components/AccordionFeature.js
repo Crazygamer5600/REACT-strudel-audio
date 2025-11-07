@@ -23,7 +23,7 @@ function AccordionFeature() {
               React.createElement(
                 Accordion.Body,
                 { key: "body1" },
-                "This section explains what your project is about."
+                "Welcome To My Strudel Music App! \n This application is designed to make music producton with strudel more streamlined."
               ),
             ]
           ),
@@ -39,7 +39,7 @@ function AccordionFeature() {
               React.createElement(
                 Accordion.Body,
                 { key: "body2" },
-                "This section describes your app’s functionality."
+                "Modify the default music by adapting audio Parameters above!"
               ),
             ]
           ),

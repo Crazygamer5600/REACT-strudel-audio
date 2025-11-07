@@ -62,8 +62,8 @@
               "Title": "TimelineEditor.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js",
               "RelativeDocumentMoniker": "src\\components\\TimelineEditor.js",
-              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js",
-              "RelativeToolTip": "src\\components\\TimelineEditor.js",
+              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js*",
+              "RelativeToolTip": "src\\components\\TimelineEditor.js*",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAACIAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-11-03T04:49:06.444Z",
@@ -79,8 +79,7 @@
               "RelativeToolTip": "src\\components\\NoteTimeline.js",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-03T04:48:59.867Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T04:48:59.867Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "src\\components\\EditorPane.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-03T04:48:57.095Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T04:48:57.095Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "src\\components\\Controls.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-03T04:48:11.361Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T04:48:11.361Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "README.md",
               "ViewState": "AgIAADEAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-11-03T04:40:13.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T04:40:13.225Z"
             },
             {
               "$type": "Document",
@@ -155,8 +151,7 @@
               "RelativeToolTip": "src\\components\\StrudelDemo.js",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAB0AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-02T08:15:02.03Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T08:15:02.03Z"
             }
           ]
         }

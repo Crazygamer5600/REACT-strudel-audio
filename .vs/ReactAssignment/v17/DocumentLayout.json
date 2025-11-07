@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\timelineeditor.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\timelineeditor.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\sources.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:sources.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\strudeldemo.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\strudeldemo.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\toastfeature.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\toastfeature.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\timelineeditor.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\timelineeditor.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\notetimeline.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -27,10 +35,6 @@
       "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\sources.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:sources.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\canvasview.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\canvasview.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
@@ -42,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,20 +62,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "ToastFeature.js",
+              "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\ToastFeature.js",
+              "RelativeDocumentMoniker": "src\\components\\ToastFeature.js",
+              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\ToastFeature.js",
+              "RelativeToolTip": "src\\components\\ToastFeature.js",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAiwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-06T04:35:59.087Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "TimelineEditor.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js",
               "RelativeDocumentMoniker": "src\\components\\TimelineEditor.js",
-              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js*",
-              "RelativeToolTip": "src\\components\\TimelineEditor.js*",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAACIAAAAgAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\TimelineEditor.js",
+              "RelativeToolTip": "src\\components\\TimelineEditor.js",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-11-03T04:49:06.444Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "NoteTimeline.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\NoteTimeline.js",
               "RelativeDocumentMoniker": "src\\components\\NoteTimeline.js",
@@ -83,7 +100,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "EditorPane.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\EditorPane.js",
               "RelativeDocumentMoniker": "src\\components\\EditorPane.js",
@@ -95,7 +112,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Controls.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\Controls.js",
               "RelativeDocumentMoniker": "src\\components\\Controls.js",
@@ -107,7 +124,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\README.md",
               "RelativeDocumentMoniker": "README.md",
@@ -119,19 +136,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
               "Title": "Sources.txt",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\Sources.txt",
               "RelativeDocumentMoniker": "Sources.txt",
               "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\Sources.txt",
               "RelativeToolTip": "Sources.txt",
-              "ViewState": "AgIAACsIAAAAAAAAAAAwwEUIAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAEo+AAAAAAAAAAAuwG0+AAB4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-11-03T04:39:07.307Z"
+              "WhenOpened": "2025-11-03T04:39:07.307Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "CanvasView.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\CanvasView.js",
               "RelativeDocumentMoniker": "src\\components\\CanvasView.js",
@@ -149,9 +167,10 @@
               "RelativeDocumentMoniker": "src\\components\\StrudelDemo.js",
               "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\StrudelDemo.js",
               "RelativeToolTip": "src\\components\\StrudelDemo.js",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB0AAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAMkAAAAAAAAAAAAiwOoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-02T08:15:02.03Z"
+              "WhenOpened": "2025-11-02T08:15:02.03Z",
+              "EditorCaption": ""
             }
           ]
         }

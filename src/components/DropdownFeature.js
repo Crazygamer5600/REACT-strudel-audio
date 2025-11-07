@@ -20,9 +20,9 @@ function DropdownFeature() {
             Dropdown.Menu,
             { key: "menu" },
             [
-              React.createElement(Dropdown.Item, { href: "#/action-1", key: "item1" }, "Profile"),
-              React.createElement(Dropdown.Item, { href: "#/action-2", key: "item2" }, "Settings"),
-              React.createElement(Dropdown.Item, { href: "#/action-3", key: "item3" }, "Logout"),
+              React.createElement(Dropdown.Item, { href: "#/action-1", key: "item1" }, "useless item #1"),
+                React.createElement(Dropdown.Item, { href: "#/action-2", key: "item2" }, "useless item #2"),
+              React.createElement(Dropdown.Item, { href: "#/action-3", key: "item3" }, "Give me a D Mark!"),
             ]
           ),
         ]
