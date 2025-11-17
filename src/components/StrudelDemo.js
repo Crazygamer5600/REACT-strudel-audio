@@ -19,7 +19,8 @@ export default function StrudelDemo() {
     const [bpm, setBpm] = useState(140);
     const [currentTime, setCurrentTime] = useState(0);
     const [playing, setPlaying] = useState(false);
-    const [theme, setTheme] = useState("dark"); // dark | light
+    const [theme, setTheme] = useState("dark");
+    const [savedPresets, setSavedPresets] = useState([]);
 
     const editorContainerRef = useRef(null);
     const canvasRef = useRef(null);
@@ -27,7 +28,6 @@ export default function StrudelDemo() {
     const hasRun = useRef(false);
     const intervalRef = useRef(null);
 
-    // Theme styles
     const themes = {
         dark: {
             container: {
@@ -65,17 +65,20 @@ export default function StrudelDemo() {
 
     const neonStyles = themes[theme];
 
-    // Load saved configuration on startup
+    // Load saved presets and last config
     useEffect(() => {
-        const saved = localStorage.getItem("strudelConfig");
-        if (saved) {
-            const cfg = JSON.parse(saved);
+        const saved = localStorage.getItem("strudelConfigList");
+        if (saved) setSavedPresets(JSON.parse(saved));
+
+        const last = localStorage.getItem("strudelConfig");
+        if (last) {
+            const cfg = JSON.parse(last);
             if (cfg.bpm) setBpm(cfg.bpm);
             if (cfg.procText) setProcText(cfg.procText);
         }
     }, []);
 
-    // Initialize Strudel editor
+    // Initialize Strudel Editor
     useEffect(() => {
         console_monkey_patch();
         const handleD3Data = (event) => console.log(event.detail);
@@ -100,7 +103,6 @@ export default function StrudelDemo() {
         globalEditorRef.current?.setCode(updated);
     }, [bpm]);
 
-    // Playback functions
     const startPlayback = () => {
         if (intervalRef.current) return;
         setPlaying(true);
@@ -135,11 +137,29 @@ export default function StrudelDemo() {
 
     const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
-    // ⭐ SAVE CONFIGURATION
+    // Save preset
     const handleSaveConfig = () => {
-        const config = { bpm, procText };
+        const config = { bpm, procText, name: `Preset ${savedPresets.length + 1}` };
+        const newList = [...savedPresets, config];
+        setSavedPresets(newList);
+        localStorage.setItem("strudelConfigList", JSON.stringify(newList));
         localStorage.setItem("strudelConfig", JSON.stringify(config));
         console.log("Saved configuration:", config);
+    };
+
+    const handleSelectPreset = (index) => {
+        const preset = savedPresets[index];
+        if (!preset) return;
+        setBpm(preset.bpm);
+        setProcText(preset.procText);
+        globalEditorRef.current?.setCode(preset.procText);
+        console.log("Loaded preset:", preset.name);
+    };
+
+    const handleRemovePreset = (index) => {
+        const newList = savedPresets.filter((_, i) => i !== index);
+        setSavedPresets(newList);
+        localStorage.setItem("strudelConfigList", JSON.stringify(newList));
     };
 
     return React.createElement(
@@ -180,7 +200,7 @@ export default function StrudelDemo() {
                         ]
                     ),
 
-                    // BPM Slider + Graph + SAVE BUTTON
+                    // BPM Slider + Graph + Save
                     React.createElement(
                         "div",
                         { key: "bpm-row", className: "row my-3", style: neonStyles.row },
@@ -189,7 +209,6 @@ export default function StrudelDemo() {
                             { className: "col-12" },
                             [
                                 React.createElement("label", { key: "bpm-label", htmlFor: "bpmSlider", style: neonStyles.bpmLabel }, `BPM: ${bpm}`),
-
                                 React.createElement("input", {
                                     key: "bpm-slider",
                                     id: "bpmSlider",
@@ -201,7 +220,6 @@ export default function StrudelDemo() {
                                     className: "form-range",
                                     style: neonStyles.slider
                                 }),
-
                                 React.createElement("div", { key: "graph-container", style: { width: "100%" } },
                                     React.createElement(BPMGraph, {
                                         bpm: bpm,
@@ -211,15 +229,9 @@ export default function StrudelDemo() {
                                         playing: playing
                                     })
                                 ),
-
-                                // ⭐ NEW SAVE BUTTON
                                 React.createElement(
                                     "button",
-                                    {
-                                        key: "save-btn",
-                                        onClick: handleSaveConfig,
-                                        className: "btn btn-success mt-3"
-                                    },
+                                    { key: "save-btn", onClick: handleSaveConfig, className: "btn btn-success mt-3" },
                                     "Save Configuration"
                                 )
                             ]
@@ -245,29 +257,32 @@ export default function StrudelDemo() {
                         )
                     ),
 
-                    // Keep CanvasView as-is
                     React.createElement(CanvasView, { key: "canvas-view", ref: canvasRef }),
 
-                    // Bootstrap Interactive Elements with centered Accordion
+                    // Interactive Elements
                     React.createElement(
                         "div",
                         { key: "bootstrap-container", className: "my-5", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" } },
                         [
-                            // Centered AccordionFeature
+                            // Centered Accordion
                             React.createElement(
                                 "div",
                                 { key: "acc-wrapper", style: { width: "100%", display: "flex", justifyContent: "center" } },
                                 React.createElement(AccordionFeature, { key: "acc" })
                             ),
 
-                            // ModalFeature (keep normal layout)
-                            React.createElement(ModalFeature, { key: "mod" }),
+                            // DropdownFeature with saved presets
+                            React.createElement(DropdownFeature, {
+                                key: "drop",
+                                savedPresets: savedPresets,
+                                onSelectPreset: handleSelectPreset,
+                                onRemovePreset: handleRemovePreset
+                            }),
 
-                            // DropdownFeature (keep normal layout)
-                            React.createElement(DropdownFeature, { key: "drop" })
+                            // ModalFeature
+                            React.createElement(ModalFeature, { key: "mod" })
                         ]
                     )
-
                 ]
             )
         ]
