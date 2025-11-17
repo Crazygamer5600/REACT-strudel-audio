@@ -65,6 +65,16 @@ export default function StrudelDemo() {
 
     const neonStyles = themes[theme];
 
+    // Load saved configuration on startup
+    useEffect(() => {
+        const saved = localStorage.getItem("strudelConfig");
+        if (saved) {
+            const cfg = JSON.parse(saved);
+            if (cfg.bpm) setBpm(cfg.bpm);
+            if (cfg.procText) setProcText(cfg.procText);
+        }
+    }, []);
+
     // Initialize Strudel editor
     useEffect(() => {
         console_monkey_patch();
@@ -125,6 +135,13 @@ export default function StrudelDemo() {
 
     const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
+    // ⭐ SAVE CONFIGURATION
+    const handleSaveConfig = () => {
+        const config = { bpm, procText };
+        localStorage.setItem("strudelConfig", JSON.stringify(config));
+        console.log("Saved configuration:", config);
+    };
+
     return React.createElement(
         "div",
         { style: neonStyles.container },
@@ -163,7 +180,7 @@ export default function StrudelDemo() {
                         ]
                     ),
 
-                    // BPM Slider + Graph
+                    // BPM Slider + Graph + SAVE BUTTON
                     React.createElement(
                         "div",
                         { key: "bpm-row", className: "row my-3", style: neonStyles.row },
@@ -172,6 +189,7 @@ export default function StrudelDemo() {
                             { className: "col-12" },
                             [
                                 React.createElement("label", { key: "bpm-label", htmlFor: "bpmSlider", style: neonStyles.bpmLabel }, `BPM: ${bpm}`),
+
                                 React.createElement("input", {
                                     key: "bpm-slider",
                                     id: "bpmSlider",
@@ -183,6 +201,7 @@ export default function StrudelDemo() {
                                     className: "form-range",
                                     style: neonStyles.slider
                                 }),
+
                                 React.createElement("div", { key: "graph-container", style: { width: "100%" } },
                                     React.createElement(BPMGraph, {
                                         bpm: bpm,
@@ -191,6 +210,17 @@ export default function StrudelDemo() {
                                         height: 150,
                                         playing: playing
                                     })
+                                ),
+
+                                // ⭐ NEW SAVE BUTTON
+                                React.createElement(
+                                    "button",
+                                    {
+                                        key: "save-btn",
+                                        onClick: handleSaveConfig,
+                                        className: "btn btn-success mt-3"
+                                    },
+                                    "Save Configuration"
                                 )
                             ]
                         )
@@ -215,18 +245,29 @@ export default function StrudelDemo() {
                         )
                     ),
 
+                    // Keep CanvasView as-is
                     React.createElement(CanvasView, { key: "canvas-view", ref: canvasRef }),
 
-                    // Bootstrap Interactive Elements
+                    // Bootstrap Interactive Elements with centered Accordion
                     React.createElement(
                         "div",
-                        { key: "bootstrap-container", className: "my-5" },
+                        { key: "bootstrap-container", className: "my-5", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" } },
                         [
-                            React.createElement(AccordionFeature, { key: "acc" }),
+                            // Centered AccordionFeature
+                            React.createElement(
+                                "div",
+                                { key: "acc-wrapper", style: { width: "100%", display: "flex", justifyContent: "center" } },
+                                React.createElement(AccordionFeature, { key: "acc" })
+                            ),
+
+                            // ModalFeature (keep normal layout)
                             React.createElement(ModalFeature, { key: "mod" }),
+
+                            // DropdownFeature (keep normal layout)
                             React.createElement(DropdownFeature, { key: "drop" })
                         ]
                     )
+
                 ]
             )
         ]

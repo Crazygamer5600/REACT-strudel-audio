@@ -26,7 +26,7 @@ function ModalFeature() {
           React.createElement(
             Modal.Body,
             { key: "body" },
-            "I bet you clicked this button expecting new info. Hah, sucker."
+            "This Project by no means is intended to replace a traditional daw, it is to be \nused in conjunction with traditional recording tools like obs in order to get audio."
           ),
           React.createElement(
             Modal.Footer,
