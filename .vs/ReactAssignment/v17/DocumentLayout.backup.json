@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\strudeldemo.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\strudeldemo.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\minag\\onedrive\\onedrive - university of south australia\\2nd year\\semester 2\\web technology\\strudel_reactor-main\\src\\components\\dropdownfeature.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\dropdownfeature.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,13 +34,26 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DropdownFeature.js",
+              "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\DropdownFeature.js",
+              "RelativeDocumentMoniker": "src\\components\\DropdownFeature.js",
+              "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\DropdownFeature.js",
+              "RelativeToolTip": "src\\components\\DropdownFeature.js",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAYwBcAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-17T02:18:39.167Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "StrudelDemo.js",
               "DocumentMoniker": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\StrudelDemo.js",
               "RelativeDocumentMoniker": "src\\components\\StrudelDemo.js",
               "ToolTip": "C:\\Users\\minag\\OneDrive\\OneDrive - University of South Australia\\2nd Year\\Semester 2\\Web Technology\\strudel_reactor-main\\src\\components\\StrudelDemo.js",
               "RelativeToolTip": "src\\components\\StrudelDemo.js",
-              "ViewState": "AgIAADUAAAAAAAAAAAAAwEkAAAALAAAAAAAAAA==",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAgwNoAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-11-02T08:15:02.03Z",
               "EditorCaption": ""
